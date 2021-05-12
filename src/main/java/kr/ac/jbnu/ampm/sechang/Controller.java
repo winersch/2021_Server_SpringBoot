@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,4 +101,47 @@ public class Controller {
         return responseEntity;
     }
 
+    @RequestMapping(value = "/put/{id}", method = RequestMethod.PUT, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> putResponseEntity(HttpServletRequest request, @PathVariable String id, @RequestBody Map<String, Object> requestMap){
+        ResponseEntity<?> responseEntity = null;
+        ArrayList<Map<String, Object>> postValueArrayList = null;
+
+        if(!testDBHashMap.isEmpty()){
+            if(id != null && !id.equals("") && testDBHashMap.containsKey(id)){
+                postValueArrayList = new ArrayList<Map<String, Object>>();
+                postValueArrayList.add(requestMap);
+                if(postValueArrayList.get(0).keySet().equals(testDBHashMap.get(id).get(0).keySet())){
+                    testDBHashMap.remove(id);
+                    testDBHashMap.put(id, postValueArrayList);
+                    responseEntity = new ResponseEntity<>(requestMap, HttpStatus.OK);
+                }else{
+                    responseEntity = new ResponseEntity<>("NOT_CasdfONTAIN", HttpStatus.NOT_FOUND);
+
+                }
+
+            }else{
+                responseEntity = new ResponseEntity<>("NOT_CONTAIN", HttpStatus.NOT_FOUND);
+            }
+        }else {
+            responseEntity = new ResponseEntity<>("NOT_CONTAIN", HttpStatus.BAD_REQUEST);
+        }
+
+        return responseEntity;
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
